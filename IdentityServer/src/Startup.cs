@@ -45,19 +45,6 @@ namespace IdentityServerHost
             
             // this is only needed for the JAR and JWT samples and adds supports for JWT-based client authentication
             builder.AddJwtBearerClientAuthentication();
-
-            services.AddAuthentication()
-                .AddOpenIdConnect("Google", "Sign-in with Google", options =>
-                {
-                    options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-                    options.ForwardSignOut = IdentityServerConstants.DefaultCookieAuthenticationScheme;
-
-                    options.Authority = "https://accounts.google.com/";
-                    options.ClientId = "708778530804-rhu8gc4kged3he14tbmonhmhe7a43hlp.apps.googleusercontent.com";
-
-                    options.CallbackPath = "/signin-google";
-                    options.Scope.Add("email");
-                });
         }
 
         public void Configure(IApplicationBuilder app)
@@ -66,7 +53,7 @@ namespace IdentityServerHost
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

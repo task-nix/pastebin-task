@@ -1,0 +1,59 @@
+services:
+# Pastebin application
+  web:
+    container_name: web
+    build:
+      context: Pastebin/src/.
+      dockerfile: Pastebin.Web/Dockerfile
+    depends_on:
+      - identity-server
+      - db    
+    network_mode: container:identity-server
+    # We need to setup SSL https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-7.0
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8090
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+
+  # Identity Server application
+  identity-server:
+    container_name: identity-server
+    build:
+      context: IdentityServer/.
+      dockerfile: src/Dockerfile
+    ports: 
+      - 8085:8085
+      - 8090:8090
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=https://+:8085;
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
+
+# PostgreSQL database server
+  db:
+    container_name: pastgres-db
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1+1is2
+      POSTGRES_DB: PastebinDB
+# PostgreSQL admin UI 
+  adminer:
+    container_name: pastgres-admin
+    image: adminer
+    restart: always
+    ports:
+    - 8080:8080
+
+
+# ui-react:
+# ui-angular:
