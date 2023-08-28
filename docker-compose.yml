@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  pastebin.web:
+    image: ${DOCKER_REGISTRY-}pastebinweb
+    build:
+      context: .
+      dockerfile: src/Pastebin.Web/Dockerfile
+    depends_on:
+      - identityserverhost
+      - db    
+    network_mode: container:identityserverhost
+    # We need to setup SSL https://learn.microsoft.com/en-us/aspnet/core/security/docker-compose-https?view=aspnetcore-7.0
+
+  identityserverhost:
+    container_name: identityserverhost
+    image: ${DOCKER_REGISTRY-}identityserverhost
+    build:
+      context: .
+      dockerfile: src/IdentityServerHost/Dockerfile
+    ports: 
+        - 8085:8085
+        - 8090:8090
+
+      
+# PostgreSQL database server
+  db:
+    container_name: pastgres-db
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1+1is2
+      POSTGRES_DB: PastebinDB
+# PostgreSQL admin UI 
+  adminer:
+    container_name: pastgres-admin
+    image: adminer
+    restart: always
+    ports:
+    - 8080:8080
