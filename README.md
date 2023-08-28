@@ -42,16 +42,24 @@ If you haven’t used [pastebin.com](https://pastebin.com) before, please try cr
 
 In the repo we have multiple solutions that covers different aspect of Pastebin application. It contains docker compose file so you should be able to easily run application on you machine.
 
-### Folder structure
-- Pastebin - Core Web application. It's contain dotnet solutions asp.net web application and supporting projects.
-- Database - Data server.
-- IdentityServer - Duende Identity Server.
-- docker-compose.yaml - Docker compose configuration that build and run all components of application.
+### Repository Overview
+- Pastebin.sln - Is an entry point for development. All 
+- src - Source projects that include Pastebin application and Identity Server.
+- tests - Tests projects
+- docker-compose-cmd.yaml - Stand-alone Docker compose configuration you can use it outside of Visual Studio. but bear in mind that preferable method to run application is from Visual Studio debugger which gonna use docker-compose.yml file.
 
-Command to run application with Docker Compose 
+### Solution Overview
 
-<code>docker-compose up --build</code>
-> More on [Docker Compose](https://docs.docker.com/compose/)
+All projects placed in one solution to keep it minimal land simplify debugging process. 
+
+Solution contains docker-compose configuration that will spin all required services. 
+
+- https://localhost:8090 - Pastebin application
+- https://localhost:8086 - Identity Server
+- http://localhost:8080 - Postgres Admin. User: postgres  Password: 1+1is2
+- localhost:5432 - Postgres Server. Connection string 'User ID =postgres;Password=1+1is2;Server=localhost;Port=5432;Database=PastebinDB;Integrated Security=true;Pooling=true;'
+
+
 #### In TODO
 - Pastebin.UI.React - React SPA. If you prefer to use React you can use this project for your UI implementation.
 - Pastebin.UI.Angular - Angular SPA. If you prefer to use React you can use this project for your UI implementation.
